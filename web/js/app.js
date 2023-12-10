@@ -1,3 +1,3 @@
-$(document).ready(function() {
-    alert("Loaded");
-});
+//$(document).ready(function() {
+//    alert("Loaded");
+//});
