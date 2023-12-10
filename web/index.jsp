@@ -25,7 +25,7 @@
                 <h3 class="text-4xl">Welcome to TechBlog</h3>
                 <p class="text-sm mb-1 mt-3">A programming language is usually described in terms of its syntax (form) and semantics (meaning). These are usually defined by a formal language.</p>
                 <p class="text-sm mb-2">Programming language theory is the subfield of computer science that studies the design, implementation, analysis, characterization, and classification of programming languages.</p>
-                <a href="#" class="text-sm rounded-md py-1 px-1.5 mr-2 bg-none text-white border border-white hover:text-black hover:bg-white">Get Started</a>
+                <a href="register_page.jsp" class="text-sm rounded-md py-1 px-1.5 mr-2 bg-none text-white border border-white hover:text-black hover:bg-white">Get Started</a>
                 <a href="login_page.jsp" class="text-sm rounded-md py-1 px-1.5 bg-none text-white border border-white hover:text-black hover:bg-white">Login</a>
             </div>
 

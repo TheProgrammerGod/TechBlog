@@ -15,6 +15,9 @@
                 <li class="p-1">
                     <a href="login_page.jsp">Login</a>
                 </li>
+                <li class="p-1">
+                    <a href="register_page.jsp">Sign Up</a>
+                </li>
             </ul>
         </div>
         <form class="justify-self-end">
