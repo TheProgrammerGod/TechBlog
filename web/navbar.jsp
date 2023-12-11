@@ -3,7 +3,7 @@
         <div class="flex items-center">
             <a href="index.jsp" class="mr-5 font-medium"><span class="fa fa-bookmark mr-2"></span>TechBlog</a>
             <ul class="flex font-medium space-x-8 justify-start">
-                <li class="hover:bg-sky-700 p-1 hover:rounded">
+                <li class="p-1">
                     <a href="#">Learn</a>
                 </li>
                 <li class="p-1">

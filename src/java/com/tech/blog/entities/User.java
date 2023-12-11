@@ -15,6 +15,7 @@ public class User {
     private String gender;
     private String password;
     private Timestamp dateTime;
+    private String profile;
 
     public void setId(int id) {
         this.id = id;
@@ -63,6 +64,15 @@ public class User {
     public Timestamp getDateTime() {
         return dateTime;
     }
+
+    public String getProfile() {
+        return profile;
+    }
+
+    public void setProfile(String profile) {
+        this.profile = profile;
+    }
+    
 
     public User(String name, String email, String gender, String password) {
         this.name = name;
