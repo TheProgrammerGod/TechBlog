@@ -56,8 +56,8 @@
                             <div class="ml-2">
                                 <label for="gender" class="font-normal text-[14px]">Select Gender</label>
                                 <br>
-                                <input type="radio"  id="gender" name="gender" value="male"  ><span class="font-normal text-[14px] mx-2">Male</span>
-                                <input type="radio"  id="gender" name="gender" value="female"><span class="font-normal text-[14px] mx-2">Female</span>
+                                <input type="radio"  id="gender" name="gender" value="Male"  ><span class="font-normal text-[14px] mx-2">Male</span>
+                                <input type="radio"  id="gender" name="gender" value="Female"><span class="font-normal text-[14px] mx-2">Female</span>
                             </div>
                             <div class="relative h-11 w-full min-w-[200px]">
                                 <input
