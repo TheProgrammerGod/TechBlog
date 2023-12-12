@@ -145,7 +145,7 @@
             });
 
             $(window).click(function (e) {
-                e.preventDefault();
+                //e.preventDefault();
                 if ($(e.target).is(modal)) {
                     modal.hide();
                 }
