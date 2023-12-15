@@ -1,5 +1,9 @@
 
 
+<%@page import="com.tech.blog.entities.Category"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.tech.blog.helpers.ConnectionProvider"%>
+<%@page import="com.tech.blog.dao.PostDao"%>
 <%@page import="com.tech.blog.entities.Message"%>
 <%@page import="com.tech.blog.entities.User"%>
 <%
@@ -18,6 +22,7 @@
         <title>Profile</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
         <style>
 
             .modal-content{
@@ -58,6 +63,9 @@
                         <li class="p-1">
                             <a href="#">Contact</a>
                         </li>
+                        <li class="p-1 px-0">
+                            <a id="postBtn" class="text-sky-500 bg-white py-1 px-2 rounded " href="#">Post</a>
+                        </li>
 
                     </ul>
                 </div>
@@ -96,13 +104,13 @@
             }
         %>
 
-        <!--        Modal-->
+        <!--       Profile Modal-->
 
-        <div id="myModal" class="hidden fixed z-10 h-full w-full overflow-auto bg-black/40">
+        <div id="profileModal" class="hidden fixed z-10 h-full w-full overflow-auto bg-black/40">
             <!-- Modal content -->
             <div class="modal-content rounded-lg relative mx-auto w-[30%] shadow-md  mt-2 bg-[#fefefe]">
                 <div class="py-3 px-4 rounded-lg rounded-b-none bg-sky-500 ">
-                    <span id="close" class=" text-white px-1 transition ease-in-out delay-150 hover:text-red-400 float-right font-bold text-2xl h-full pb-10 cursor-pointer">&times;</span>
+                    <span id="profileClose" class=" text-white px-1 transition ease-in-out delay-150 hover:text-red-400 float-right font-bold text-2xl h-full pb-10 cursor-pointer">&times;</span>
                     <h2 class="text-white font-bold text-lg">TechBlog</h2>
                 </div>
                 <div class="py-3 px-4">
@@ -165,40 +173,99 @@
                 </div>
                 <div class="py-1 px-4 flex justify-end items-center">
                     <div class="flex items-center space-x-4">
-                        <button id="closeBtn"  class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded">Close</button>
+                        <button id="profileCloseBtn"  class="bg-slate-500 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded">Close</button>
                         <button id="editBtn" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">Edit</button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!--        End of Modal-->
+        <!--        End of Profile Modal-->
+
+
+        <!--        Post Modal-->
+
+        <div id="postModal" class="hidden fixed z-10 h-full w-full overflow-auto bg-black/40">
+            <!-- Modal content -->
+            <div class="modal-content rounded-lg relative mx-auto w-[50%] shadow-md  mt-2 bg-[#fefefe]">
+                <div class="py-3 px-4 rounded-lg rounded-b-none bg-sky-500 ">
+                    <span id="postClose" class=" text-white px-1 transition ease-in-out delay-150 hover:text-red-400 float-right font-bold text-2xl h-full pb-10 cursor-pointer">&times;</span>
+                    <h2 class="text-white font-bold text-lg">Create a blog post</h2>
+                </div>
+                <div class="py-3 px-4">
+                    <div class="flex flex-col content-center gap-1">
+                        <div id="" class="">
+                            <form id="addPostForm" action="AddPostServlet" method="POST" enctype="multipart/form-data">
+                                <select class="my-1 w-full border p-0.5" name="category_id">
+                                    <option selected disabled>---Select Category---</option>
+                                    <%
+                                        PostDao postDao = new PostDao(ConnectionProvider.getConnection());
+                                        ArrayList<Category> categories = postDao.getCategories();
+                                        for (Category c : categories) {
+                                    %>
+                                    <option value="<%= c.getId()%>"><%= c.getName()%></option>
+                                    <%
+                                        }
+                                    %>
+                                </select>
+                                <input name="post_title" class="my-1 w-full border p-0.5" type="text" placeholder="Enter your post title">
+                                <textarea name="post_content" rows="4" placeholder="Enter your content" class="my-1 w-full border p-0.5"></textarea>
+                                <textarea name="post_code" rows="4" placeholder="Enter your code (If any)" class="my-1 w-full border p-0.5"></textarea>
+                                <label >Select your pic : </label><br>
+                                <input type="file" name="post_image">
+                                <div class="mx-auto w-fit">
+                                    <button type="submit" id="" class="border-2 border-sky-500 py-0.5 px-2 bg-transparent text-sky-500 rounded-md  text-lg mt-2 hover:bg-sky-500 hover:text-white ">Post</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--        End of Post Modal-->
 
 
         <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="js/app.js" type="text/javascript"></script>
         <script>
             $(document).ready(function () {
-                var modal = $("#myModal");
+                var profileModal = $("#profileModal");
+                var postModal = $("#postModal");
+
+                $("#postBtn").click(function (e) {
+                    postModal.show();
+                });
+
+//                $("#postCloseBtn").click(function (e) {
+//                    postModal.hide();
+//                });
+                $("#postClose").click(function (e) {
+                    postModal.hide();
+                });
+
                 $("#profileBtn").click(function (e) {
                     e.preventDefault();
-                    modal.show();
+                    profileModal.show();
                 });
 
-                $("#closeBtn").click(function (e) {
+                $("#profileCloseBtn").click(function (e) {
                     e.preventDefault();
-                    modal.hide();
+                    profileModal.hide();
                 });
 
-                $("#close").click(function (e) {
+                $("#profileClose").click(function (e) {
                     e.preventDefault();
-                    modal.hide();
+                    profileModal.hide();
                 });
 
                 $(window).click(function (e) {
                     //e.preventDefault();
-                    if ($(e.target).is(modal)) {
-                        modal.hide();
+                    if ($(e.target).is(profileModal)) {
+                        profileModal.hide();
+                    }
+                    if ($(e.target).is(postModal)) {
+                        postModal.hide();
                     }
                 });
                 let editStatus = false;
@@ -214,6 +281,48 @@
                         $(this).text("Edit");
                         editStatus = false;
                     }
+                });
+            });
+        </script>
+
+        <!--        now add post js-->
+        <script>
+            $(document).ready(function (e) {
+                $("#addPostForm").on("submit", function (event) {
+                    event.preventDefault();
+                    let form = new FormData(this);
+                    $.ajax({
+                        url: "AddPostServlet",
+                        type: 'POST',
+                        data: form,
+                        success: function (data, textStatus, jqXHR) {
+                            if (data.trim() === "done") {
+                                $("#addPostForm").get(0).reset();
+                                Swal.fire({
+                                    title: "Well Done!",
+                                    text: "Your blog has been posted",
+                                    icon: "success"
+                                }).then((value) => {
+                                    window.location = "profile_page.jsp";
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Oops!",
+                                    text: "Something went wrong",
+                                    icon: "error"
+                                });
+                            }
+                        },
+                        error: function (jqXHR, textStatus, errorThrown) {
+                            Swal.fire({
+                                title: "Oops!",
+                                text: "Something went wrong",
+                                icon: "error"
+                            });
+                        },
+                        processData: false,
+                        contentType: false
+                    });
                 });
             });
         </script>

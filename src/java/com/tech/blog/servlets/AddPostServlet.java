@@ -4,8 +4,8 @@
  */
 package com.tech.blog.servlets;
 
-import com.tech.blog.dao.UserDao;
-import com.tech.blog.entities.Message;
+import com.tech.blog.dao.PostDao;
+import com.tech.blog.entities.Post;
 import com.tech.blog.entities.User;
 import com.tech.blog.helpers.ConnectionProvider;
 import com.tech.blog.helpers.Helper;
@@ -25,7 +25,7 @@ import javax.servlet.http.Part;
  * @author KIIT
  */
 @MultipartConfig
-public class EditServlet extends HttpServlet {
+public class AddPostServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -41,59 +41,25 @@ public class EditServlet extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet EditServlet</title>");
-            out.println("</head>");
-            out.println("<body>");
-
-            //fetching the form data
-            String userName = request.getParameter("user_name");
-            String userEmail = request.getParameter("user_email");
-            String userPassword = request.getParameter("user_pass");
-            Part part = request.getPart("user_pic");
-            String userProfile = part.getSubmittedFileName();
-
-            //fetching the current user object
+            int catId = Integer.parseInt(request.getParameter("category_id"));
+            String title = request.getParameter("post_title");
+            String content = request.getParameter("post_content");
+            String code = request.getParameter("post_code");
+            Part part = request.getPart("post_image");
             HttpSession session = request.getSession();
             User user = (User) session.getAttribute("currentUser");
-            user.setName(userName);
-            user.setEmail(userEmail);
-            user.setPassword(userPassword);
-            String oldPath = user.getProfile();
-            user.setProfile(userProfile.equals("") ? user.getProfile() : userProfile);
-
-            //updating the DB
-            UserDao dao = new UserDao(ConnectionProvider.getConnection());
-            boolean ans = dao.updateUser(user);
-
-            if (ans) {
-                out.println("Profile Updated");
-                if (!userProfile.equals("")) {
-                    String path = request.getRealPath("/") + "pictures" + File.separator;
-                    if (!oldPath.equals("default.png")) {
-                        Helper.deleteFile(path + oldPath);
-                    }
-                    path += userProfile;
-                    if (Helper.saveFile(part.getInputStream(), path)) {
-                        out.println("Picture updated");
-                    } else {
-                        out.println("Picture cannot be updated");
-                    }
-                }
-                Message msg = new Message("Profile updated Successfully", "success", "bg-green-200");
-                session.setAttribute("msg", msg);
-                response.sendRedirect("profile_page.jsp");
-            } else {
-                out.println("not updated to DB");
-                Message msg = new Message("Profile cannot be updated", "error", "bg-red-300");
-                session.setAttribute("msg", msg);
-                response.sendRedirect("profile_page.jsp");
+            int userId = user.getId();
+            
+            Post post = new Post(title,content,code,part.getSubmittedFileName(),null,catId,userId);
+            PostDao postDao = new PostDao(ConnectionProvider.getConnection());
+            if(postDao.savePost(post)){
+                String path = request.getRealPath("/") + "blog_images" + File.separator + part.getSubmittedFileName();
+                Helper.saveFile(part.getInputStream(), path);
+                out.println("done");
             }
-
-            out.println("</body>");
-            out.println("</html>");
+            else{
+                out.println("error");
+            }
         }
     }
 
