@@ -43,4 +43,50 @@ public class Helper {
         return flag;
     }
     
+    public static String formatDate(String date){
+        String newDate = "";
+        int i = 0;
+        while(date.charAt(i) != '-'){
+            newDate += date.charAt(i);
+            i++;
+        }
+        String month = "";
+        i++;
+        while(date.charAt(i) != '-'){
+            month += date.charAt(i);
+            i++;
+        }
+        switch(month){
+            case "01" -> month = "Jan";
+            case "02" -> month = "Feb";
+            case "03" -> month = "Mar";
+            case "04" -> month = "Apr";
+            case "05" -> month = "May";
+            case "06" -> month = "Jun";
+            case "07" -> month = "Jul";
+            case "08" -> month = "Aug";
+            case "09" -> month = "Sep";
+            case "10" -> month = "Oct";
+            case "11" -> month = "Nov";
+            case "12" -> month = "Dec";
+                       
+        }
+        newDate = month + ", " + newDate;
+        i++;
+        String day = "";
+        while(i < date.length()){
+            day += date.charAt(i);
+            i++;
+        }
+        int d = Integer.parseInt(day);
+        day = switch (d) {
+            case 1 -> d + "st ";
+            case 2 -> d + "nd ";
+            case 3 -> d + "rd ";
+            default -> d + "th ";
+        };
+        newDate = day + newDate;
+        return newDate;
+    }
+    
 }

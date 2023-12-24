@@ -11,6 +11,9 @@
     if (user == null) {
         response.sendRedirect("login_page.jsp");
     }
+
+    PostDao postDao = new PostDao(ConnectionProvider.getConnection());
+    ArrayList<Category> categories = postDao.getCategories();
 %>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -103,6 +106,8 @@
                 session.removeAttribute("msg");
             }
         %>
+
+
 
         <!--       Profile Modal-->
 
@@ -199,8 +204,6 @@
                                 <select class="my-1 w-full border p-0.5" name="category_id">
                                     <option selected disabled>---Select Category---</option>
                                     <%
-                                        PostDao postDao = new PostDao(ConnectionProvider.getConnection());
-                                        ArrayList<Category> categories = postDao.getCategories();
                                         for (Category c : categories) {
                                     %>
                                     <option value="<%= c.getId()%>"><%= c.getName()%></option>
@@ -224,6 +227,41 @@
         </div>
 
         <!--        End of Post Modal-->
+        
+                <!--        Page Body-->
+
+        <main>
+            <div class="m-4 flex">
+                <div class="flex flex-col w-[30%] border h-fit">
+                    <div class="c-link w-full p-2 bg-sky-500 text-white border cursor-pointer" onclick="getPosts(0,this)">
+                        <a  href="#" class="text-xl">All Post</a>
+                    </div>
+
+                    <%
+                        for (Category c : categories) {
+
+                    %>
+                    <div class="c-link w-full p-2 border cursor-pointer" onclick="getPosts(<%= c.getId() %>,this)">
+                        <a href="#"  class="text-xl"><%= c.getName()%></a>
+                    </div>
+
+                    <% }%>
+                </div>
+
+                <div class="w-[70%]">
+                    <div class="text-center" id="loader">
+                        <i class="fa fa-refresh fa-3x animate-spin text-sky-500"></i>
+                        <h3 class="text-sky-500 mt-2 text-md">Loading...Please wait</h3>
+                    </div>
+                    <div id="post-container" class="mx-4">
+                        
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+        <!--        End of Page Body-->
 
 
         <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
@@ -324,6 +362,34 @@
                         contentType: false
                     });
                 });
+            });
+        </script>
+
+
+        <!--        loading post using ajax-->
+        <script>
+            
+            function getPosts(catId,temp){
+                $("#loader").show();
+                $("#post-container").hide();
+                $.ajax({
+                    url: "load_posts.jsp",
+                    data: {cid : catId},
+                    success: function (data, textStatus, jqXHR) {
+                        $("#loader").hide();
+                        $("#post-container").show();
+                        $("#post-container").html(data);
+                    }
+                });
+                
+                if(temp !== null){
+                    $(".c-link").removeClass("bg-sky-500 text-white");
+                    $(temp).addClass("bg-sky-500 text-white");
+                }
+            }
+            
+            $(document).ready(function(e){
+                getPosts(0,null);
             });
         </script>
     </body>

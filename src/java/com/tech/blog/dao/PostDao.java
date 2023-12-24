@@ -12,6 +12,7 @@ import com.tech.blog.entities.Category;
 import com.tech.blog.entities.Post;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 public class PostDao {
     private Connection con;
 
@@ -59,4 +60,61 @@ public class PostDao {
         return flag;
     }
     
+    //method to get all posts from DB
+    public List<Post> getAllPosts(){
+        List<Post> posts = new ArrayList<>();
+        
+        try{
+            String query = "select * from post order by id desc";
+            Statement stmt = con.createStatement();
+            ResultSet set = stmt.executeQuery(query);
+            while(set.next()){
+                Post post = new Post();
+                post.setId(set.getInt("id"));
+                post.setTitle(set.getString("title"));
+                post.setContent(set.getString("content"));
+                post.setCode(set.getString("code"));
+                post.setImage(set.getString("image"));
+                post.setDate(set.getTimestamp("date"));
+                post.setCatId(set.getInt("catId"));
+                post.setUserId(set.getInt("userId"));
+                posts.add(post);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return posts;
+    }
+    
+    
+    //method to get all posts of one category from DB
+    public List<Post> getPostsByCategory(int catId){
+        List<Post> posts = new ArrayList<>();
+        
+        try{
+            String query = "select * from post where catId=?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, catId);
+            ResultSet set = pstmt.executeQuery();
+            while(set.next()){
+                Post post = new Post();
+                post.setId(set.getInt("id"));
+                post.setTitle(set.getString("title"));
+                post.setContent(set.getString("content"));
+                post.setCode(set.getString("code"));
+                post.setImage(set.getString("image"));
+                post.setDate(set.getTimestamp("date"));
+                post.setCatId(catId);
+                post.setUserId(set.getInt("userId"));
+                posts.add(post);
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        
+        return posts;
+    }
 }
