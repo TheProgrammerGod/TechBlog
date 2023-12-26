@@ -117,4 +117,30 @@ public class PostDao {
         
         return posts;
     }
+    
+    //method to get a single post from DB
+    public Post getPostById(int postId){
+        Post post = null;
+        try{
+            String query = "Select * from post where id= ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, postId);
+            ResultSet set = pstmt.executeQuery();
+            while(set.next()){
+                post = new Post();
+                post.setId(set.getInt("id"));
+                post.setTitle(set.getString("title"));
+                post.setContent(set.getString("content"));
+                post.setCode(set.getString("code"));
+                post.setImage(set.getString("image"));
+                post.setDate(set.getTimestamp("date"));
+                post.setCatId(set.getInt("catId"));
+                post.setUserId(set.getInt("userId"));
+            }
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+        return post;
+    }
 }

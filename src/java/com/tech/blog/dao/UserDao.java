@@ -90,4 +90,32 @@ public class UserDao {
         }
         return flag;
     }
+    
+    //method to get user data using user ID from DB
+    public User getUserById(int userId){
+        User user = null;
+        
+        try{
+            String query = "Select * from user where id= ?";
+            PreparedStatement pstmt = con.prepareStatement(query);
+            pstmt.setInt(1, userId);
+            ResultSet set = pstmt.executeQuery();
+            while(set.next()){
+                user = new User();
+                user.setEmail(set.getString("email"));
+                user.setId(set.getInt("id"));
+                user.setName(set.getString("name"));
+                user.setGender(set.getString("gender"));
+                user.setPassword(set.getString("password"));
+                user.setDateTime(set.getTimestamp("rdate"));
+                user.setProfile(set.getString("profile"));
+            }
+        }
+        catch(SQLException e){
+            e.printStackTrace();
+        }
+        
+        
+        return user;
+    }
 }

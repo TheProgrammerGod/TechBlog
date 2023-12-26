@@ -45,7 +45,7 @@
         </div>
         <div class=" h-[100%]">
             <div class="absolute bottom-0 m-3">
-                <a href="show_blog_page.jsp"
+                <a href="show_blog_page.jsp?post_id=<%= post.getId() %>"
                     class="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 text-xs py-2 px-2 rounded-lg hover:bg-sky-500 text-sky-500 border border-sky-500 hover:text-white active:bg-gray-900/2 mr-2">
                     Read More
                 </a>
