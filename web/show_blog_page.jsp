@@ -1,4 +1,5 @@
 
+<%@page import="com.tech.blog.dao.LikeDao"%>
 <%@page import="com.tech.blog.dao.UserDao"%>
 <%@page import="com.tech.blog.helpers.Helper"%>
 <%@page import="com.tech.blog.entities.Message"%>
@@ -19,11 +20,13 @@
 
 <%    int postId = Integer.parseInt(request.getParameter("post_id"));
     PostDao postDao = new PostDao(ConnectionProvider.getConnection());
+    LikeDao likeDao = new LikeDao(ConnectionProvider.getConnection());
     Post post = postDao.getPostById(postId);
     ArrayList<Category> categories = postDao.getCategories();
     String date = post.getDate().toString();
     date = date.substring(0, date.indexOf(" "));
     date = Helper.formatDate(date);
+    boolean isLiked = likeDao.isLikedBy(user.getId(), postId);
 
 %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -31,6 +34,8 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta http-equiv="Permissions-Policy" content="AmbientLightSensor()">
+        <meta property="fb:app_id" content="380219321156322" />
         <title><%= post.getTitle()%></title>
         <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
@@ -57,8 +62,12 @@
                 clip-path: polygon(30% 0%, 70% 0%, 100% 0, 100% 83%, 73% 100%, 33% 83%, 0 100%, 0 0);
             }
         </style>
+
     </head>
     <body>
+        <div id="fb-root"></div>
+        <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_GB/sdk.js#xfbml=1&version=v18.0&appId=380219321156322" nonce="pWpTF6e5"></script>
+
         <!--        Navbar-->
 
         <nav class="bg-sky-500 w-full text-white">
@@ -234,45 +243,56 @@
         </div>
 
         <!--        End of Post Modal-->
-        
+
         <div class="p-4 w-[80%] mx-auto">
             <div class="font-bold text-4xl text-justify">
-                <h1><%= post.getTitle() %></h1>
+                <h1><%= post.getTitle()%></h1>
             </div>
-            
+
             <div>
-                <img src="blog_images/<%= post.getImage() %>" alt="alt" class="my-4 w-full h-80 object-fill rounded-lg"/>
+                <img src="blog_images/<%= post.getImage()%>" alt="alt" class="my-4 w-full h-80 object-fill rounded-lg"/>
             </div>
-            
+
             <div class="flex justify-between border p-1">
                 <div>
                     <%
                         UserDao userDao = new UserDao(ConnectionProvider.getConnection());
                     %>
-                    <a href="#" class="text-sky-500 hover:underline"><%= userDao.getUserById(post.getUserId()).getName() %></a> posted this :
+                    <a href="#" class="text-sky-500 hover:underline"><%= userDao.getUserById(post.getUserId()).getName()%></a> posted this :
                 </div>
                 <div class="font-bold">
-                    <%= date %>
+                    <%= date%>
                 </div>
             </div>
-            
+
             <br>
             <div class="block font-sans text-base antialiased font-light leading-relaxed text-inherit">
-                <p><%= post.getContent() %></p>
+                <p><%= post.getContent()%></p>
             </div>
             <br>
             <div class="block font-sans text-base antialiased font-light leading-relaxed text-inherit">
-                <pre><%= post.getCode() %></pre>
+                <pre><%= post.getCode()%></pre>
             </div>
             <br>
             <hr>
             <br>
             <div>
                 <button
-                    class="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 text-xs py-2 px-2 rounded-lg hover:bg-sky-500 text-sky-500 border border-sky-500  bg-white hover:text-white active:bg-gray-900/2"
-                    type="button"> Like
+                    id="<%= post.getId()%>btn"
+                    class="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 text-xs py-2 px-2 rounded-lg
+                    <%
+                        if (isLiked) {
+                    %>
+                    bg-sky-500 text-white
+                    <% } else {
+                    %>
+
+                    text-sky-500 bg-white
+                    <% }%>
+                    border border-sky-500"
+                    type="button" onclick="doLike(<%= post.getId()%>,<%= user.getId()%>)"> Like
                     <i class="fa fa-thumbs-o-up"></i>
-                    <span>10</span>
+                    <span id="<%= post.getId()%>span"><%= likeDao.countLikeOnPost(post.getId())%></span>
                 </button>
                 <button
                     class="align-middle select-none font-sans font-bold text-center transition-all disabled:opacity-50 text-xs py-2 px-2 rounded-lg hover:bg-sky-500 text-sky-500 border border-sky-500  bg-white hover:text-white active:bg-gray-900/2"
@@ -281,66 +301,68 @@
                     <span>4</span>
                 </button>
             </div>
+            <div class="">
+                <div class="fb-comments" data-href="http://localhost:9494/TechBlog/show_blog_page.jsp?post_id=6" data-width="" data-numposts="5"></div>
+            </div>
         </div>
-        
-        
+
         <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
         <script src="js/app.js" type="text/javascript"></script>
         <script>
-            $(document).ready(function () {
-                var profileModal = $("#profileModal");
-                var postModal = $("#postModal");
+                        $(document).ready(function () {
+                            var profileModal = $("#profileModal");
+                            var postModal = $("#postModal");
 
-                $("#postBtn").click(function (e) {
-                    postModal.show();
-                });
+                            $("#postBtn").click(function (e) {
+                                postModal.show();
+                            });
 
-//                $("#postCloseBtn").click(function (e) {
-//                    postModal.hide();
-//                });
-                $("#postClose").click(function (e) {
-                    postModal.hide();
-                });
+    //                $("#postCloseBtn").click(function (e) {
+    //                    postModal.hide();
+    //                });
+                            $("#postClose").click(function (e) {
+                                postModal.hide();
+                            });
 
-                $("#profileBtn").click(function (e) {
-                    e.preventDefault();
-                    profileModal.show();
-                });
+                            $("#profileBtn").click(function (e) {
+                                e.preventDefault();
+                                profileModal.show();
+                            });
 
-                $("#profileCloseBtn").click(function (e) {
-                    e.preventDefault();
-                    profileModal.hide();
-                });
+                            $("#profileCloseBtn").click(function (e) {
+                                e.preventDefault();
+                                profileModal.hide();
+                            });
 
-                $("#profileClose").click(function (e) {
-                    e.preventDefault();
-                    profileModal.hide();
-                });
+                            $("#profileClose").click(function (e) {
+                                e.preventDefault();
+                                profileModal.hide();
+                            });
 
-                $(window).click(function (e) {
-                    //e.preventDefault();
-                    if ($(e.target).is(profileModal)) {
-                        profileModal.hide();
-                    }
-                    if ($(e.target).is(postModal)) {
-                        postModal.hide();
-                    }
-                });
-                let editStatus = false;
-                $("#editBtn").click(function (e) {
-                    if (editStatus === false) {
-                        $("#profile-details").hide();
-                        $("#edit-profile").show();
-                        $(this).text("Back");
-                        editStatus = true;
-                    } else {
-                        $("#profile-details").show();
-                        $("#edit-profile").hide();
-                        $(this).text("Edit");
-                        editStatus = false;
-                    }
-                });
-            });
+                            $(window).click(function (e) {
+                                //e.preventDefault();
+                                if ($(e.target).is(profileModal)) {
+                                    profileModal.hide();
+                                }
+                                if ($(e.target).is(postModal)) {
+                                    postModal.hide();
+                                }
+                            });
+                            let editStatus = false;
+                            $("#editBtn").click(function (e) {
+                                if (editStatus === false) {
+                                    $("#profile-details").hide();
+                                    $("#edit-profile").show();
+                                    $(this).text("Back");
+                                    editStatus = true;
+                                } else {
+                                    $("#profile-details").show();
+                                    $("#edit-profile").hide();
+                                    $(this).text("Edit");
+                                    editStatus = false;
+                                }
+                            });
+                        });
         </script>
 
         <!--        now add post js-->
