@@ -100,6 +100,9 @@
                                 </button>
                             </div>
                         </form>
+                        <div class="mt-px font-medium text-gray-700 w-full text-center pb-3 text-sky-500">
+                            <a class="hover:underline" href="login_page.jsp">Already Registered? Login Here</a>
+                        </div>
                     </div>
                 </div>
         </main>
@@ -135,13 +138,12 @@
                             }).then((value) => {
                                 window.location = "login_page.jsp";
                             });
-                        }
-                        else{
+                        } else {
                             Swal.fire({
-                            title: "Oops!",
-                            text: data,
-                            icon: "error"
-                        });
+                                title: "Oops!",
+                                text: data,
+                                icon: "error"
+                            });
                         }
                     },
                     error: function (jqXHR, textStatus, errorThrown) {

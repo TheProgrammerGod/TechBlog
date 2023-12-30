@@ -51,7 +51,7 @@
                     %>
                     <form action="LoginServlet" method="POST" id="login-form">
                         <div class="flex flex-col gap-2 p-4">
-                            <div class="relative h-11 w-full min-w-[200px]">
+                            <div class="relative h-10 w-full min-w-[200px]">
                                 <input
                                     class="w-full h-full px-3 py-3 font-sans text-sm font-normal transition-all bg-transparent border rounded peer border-blue-gray-200 border-t-transparent text-blue-gray-700 outline outline-0 placeholder-shown:border placeholder-shown:border-blue-gray-200 placeholder-shown:border-t-blue-gray-200 focus:border-2 focus:border-gray-900 focus:border-t-transparent focus:outline-0 disabled:border-0 disabled:bg-blue-gray-50"
                                     placeholder=" " id="user_email" name="user_email" required type="email"/>
@@ -91,7 +91,7 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="p-6 pt-0">
+                        <div class="p-6 pb-2 pt-0">
                             <button
                                 class="block w-full select-none rounded-lg bg-sky-500 py-3 px-6 text-center align-middle font-sans text-xs font-bold uppercase text-white shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/20 active:opacity-[0.85] disabled:pointer-events-none disabled:opacity-50 disabled:shadow-none"
                                 type="submit">
@@ -99,6 +99,10 @@
                             </button>
                         </div>
                     </form>
+                    
+                    <div class="mt-px font-medium text-gray-700 w-full text-center pb-3 text-sky-500">
+                        <a class="hover:underline" href="register_page.jsp">New here? Register now!</a>
+                    </div>
                 </div>
             </div>
         </main>
